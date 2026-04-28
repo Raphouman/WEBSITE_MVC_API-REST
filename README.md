@@ -6,10 +6,10 @@ Application web de consultation d'une base de données en acupuncture, réalisé
 
 | | |
 |---|---|
-| **Équipe** | El-Idrissi Walid · Mazuel Loris · Picard Raphaël  ==> Participation équitable |
+| **Équipe** | El-Idrissi Walid · Mazuel Loris · Picard Raphaël  ==>|
 | **Langage** | PHP 8.2 (sans Composer), PostgreSQL 16, Twig 3 |
 | **Stack** | Apache 2.4 · PDO · Docker Compose |
-| **Date**  | Avril 2026 |
+| **Date & Lieu**  | Avril 2026 at CPE LYON |
 
 ---
 
