@@ -1,0 +1,136 @@
+{#<-- src/View/login.html.twig -->#}
+{#<-- Vue de connexion : formulaire HTML pour que les utilisateurs puissent se CONNECTER à leur compte -->#}
+
+{% extends 'layout/base.html.twig' %}
+
+{% block title %} Connexion – AAA Acupuncture {% endblock %}
+
+{% block meta_description %}
+  <meta name="description" content="Connexion à l'espace membres de l'Association des Acupuncteurs pour l'Accessibilité.">
+{% endblock %}
+
+{% block main %}
+  <main id="main-content" class="login-page" aria-labelledby="login-heading">
+
+    <div class="login-card">
+
+      <!-- En-tête carte -->
+      <div class="login-card-header">
+        <div class="logo-symbol-lg" aria-hidden="true">AAA</div>
+        <h1 id="login-heading">Espace membres</h1>
+        <p>Connectez-vous pour accéder à la recherche par mots-clés</p>
+      </div>
+
+      <!-- Corps carte -->
+      <div class="login-card-body">
+
+        <!-- Message d'erreur (caché par défaut, visible si echec) -->
+        <!-- <div class="alert alert-danger" role="alert" aria-live="assertive" hidden id="login-error">
+          <strong>Identifiants incorrects.</strong> Vérifiez votre identifiant et votre mot de passe.
+        </div> -->
+        <!-- remplacer pour PHP -->
+        {% if error_bool %}
+          <div class="alert alert-danger" role="alert" aria-live="assertive">
+              {{ error }}   {# affichage PHP {{}} #}
+          </div>
+        {% endif %}
+
+
+        <!--Method POST !!! ==> envoi sécurisé des données du formulaire (id et mdp) au serveur pour traitement (PHP) et éviter que les données soient visibles dans l'URL (contrairement à GET). Action "/login" correspond à la route PHP qui traitera la connexion. -->
+        <form method="POST" action="/login" novalidate aria-labelledby="login-heading">  <!-- Formulaire de connexion en lien avec PHP (/login)-->
+
+          <!-- Identifiant -->
+          <div class="form-group">
+            <label for="identifiant">
+              Identifiant
+              <span aria-hidden="true" style="color:var(--color-danger);">*</span>
+            </label>
+
+            <!-- Donc on récupèrera dans le AuthController : $identifiant = $_POST['identifiant'] car name="identifiant" -->
+            <input
+              type="text"
+              id="identifiant"
+              name="identifiant" 
+              value="{{ identifiant|default('')|e('html_attr') }}"
+              autocomplete="username"
+              required  
+              aria-required="true"
+              aria-describedby="identifiant-hint"
+              spellcheck="false"
+              placeholder="Email ou Nom d'utilisateur"
+            >
+            <p class="hint" id="identifiant-hint">Identifiant fourni par votre administrateur.</p>
+            <p class="error-msg" id="identifiant-error" role="alert">Ce champ est obligatoire.</p> <!-- caché par défaut car class="error-msg" -->
+          </div>
+
+
+          <!-- Mot de passe -->
+          <div class="form-group">
+            <label for="mot-de-passe">
+              Mot de passe
+              <span aria-hidden="true" style="color:var(--color-danger);">*</span>
+            </label>
+            <!-- donc on récupèrera dans le AuthController : $password = $_POST['password'] car name="password" -->
+            <div class="password-input-wrap">
+              <input
+                type="password"
+                id="mot-de-passe"
+                name="password"
+                autocomplete="current-password"
+                required
+                aria-required="true"
+                aria-describedby="mdp-hint"
+                placeholder="••••••••"
+              >
+              <button type="button" class="btn-toggle-password" aria-label="Afficher le mot de passe" onclick="togglePassword('mot-de-passe', this)">👁</button>
+            </div>
+            <p class="hint" id="mdp-hint">Sensible à la casse.</p>
+            <p class="error-msg" id="mdp-error" role="alert">Ce champ est obligatoire.</p>
+          </div>
+
+          <!-- Se souvenir -->
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" name="remember_me" value="1" {% if remember_me %}checked{% endif %}>  <!-- ici name pour le paramètre de session et value=1 pour activer la case à cocher par défaut -->
+              Rester connecté sur cet appareil
+            </label>
+          </div>
+
+          <!-- Champ anti-CSRF (vide pour la maquette statique) -->
+          <input type="hidden" name="csrf_token" value="">  <!-- Token CSRF pour la protection contre les attaques CSRF -->
+
+          <!-- Bouton de soumission -->
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;margin-bottom:0.5rem;">
+            Se connecter
+          </button>
+          <!-- Bouton d'inscription -->
+          <a href="/register" class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;display:flex;">
+            INSCRIPTION
+          </a>
+
+        </form>
+
+        <div class="form-divider" aria-hidden="true">ou</div>
+
+        <p style="text-align:center;font-size:.85rem;color:var(--color-text-muted);">
+          <a href="/home">Retour à la liste des pathologies</a>
+        </p>
+        <p id="inscription-note" class="hint" style="text-align:center;margin-top:.5rem;">
+          Contactez votre administrateur pour tout problème d'accès.
+        </p>
+
+      </div><!-- /login-card-body -->
+
+    </div><!-- /login-card -->
+
+  </main>
+{% endblock %}
+
+
+
+
+
+
+{% block scripts %}
+  <script src="/js/toggle-password.js"></script>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!-- ── Barre de recherche & filtres ── -->
+<section aria-label="Recherche et filtres">
+    <form class="search-filter-bar" method="get" action="/" role="search">  <!-- method="get" : les filtres sont envoyés dans l'URL, ce qui permet le partage de liens filtrés et la navigation avec les boutons "précédent/suivant" du navigateur -->
+    <fieldset>
+        <legend class="filter-legend">
+        <span aria-hidden="true">⚙</span> Recherche &amp; filtres
+        </legend>
+
+        <!-- Barre de recherche par mot-clé (réservée aux connectés) -->
+        <!-- Par défaut (pas connecté) : la barre de recherche est disabled-->
+        <!-- disabled ==> PHP ==> isset ... !!!!!!!!!!!!!!!!!!!!!-->
+
+        <div class="search-row">
+        <div class="search-input-wrap">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+
+            <!-- name="keyword" : correspond à la clé "keyword" attendue dans la query string de homeController (ex: ?keyword=...) -->
+            <input
+            type="search"
+            id="search-mots-cles"
+            name="keyword"
+            placeholder="Mot(s)-clé(s)…"
+            value="{{ home_data.keyword ?? '' }}"
+            aria-label="Recherche par mots-clés (connexion requise)"
+            {{ user_data.isLogged ? '' : 'disabled'  }}
+            {# pour activer la recherche sans être remplacer par {{ isLogged ? : '' }} ou supprimer l'attribut disabled #}
+            title="Fonctionnalité réservée aux utilisateurs connectés"
+            >
+        </div>
+        {% if not user_data.isLogged %}
+            <a href="/login" class="btn btn-ghost btn-sm">
+                Connexion requise
+            </a>
+        {% endif %}
+        </div>
+
+
+
+        
+
+        <!-- Filtres -->
+        <p class="filter-legend" id="filtres-label">
+        <span aria-hidden="true">≡</span> Filtrer par :
+        </p>
+
+        <div class="filter-grid" role="group" aria-labelledby="filtres-label">
+
+        <div class="filter-field">
+            <label for="filtre-type">Type de pathologie</label>
+            <select id="filtre-type" name="type"> <!-- name="type" : le nom de chaque select correspond à la clé attendue dans la query string (ex: ?type=m) -->
+            {% for cle, valeur in home_data.type_options %}
+                <option value="{{cle}}" {{ home_data.type == cle ? 'selected' : '' }}>{{valeur}}</option>
+            {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="filtre-carac">Caractéristique</label>
+            <select id="filtre-carac" name="carac" data-carac-by-type="{{ home_data.carac_by_type|json_encode|e('html_attr') }}"> <!-- name="carac" : correspond à la clé "carac" attendue dans la query string (ex: ?carac=p) -->
+            {% for cle, valeur in home_data.carac_options %}
+                <option value="{{cle}}" {{ home_data.carac == cle ? 'selected' : '' }}>{{valeur}}</option>
+            {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="filtre-meridien">Méridien</label>
+            <select id="filtre-meridien" name="meridien"> <!-- name="meridien" : correspond à la clé "meridien" attendue dans la query string (ex: ?meridien=P) -->
+            <option value="" {{ home_data.meridien == '' or home_data.meridien is null ? 'selected' : '' }}>— Tous les méridiens —</option>
+            <optgroup label="Méridiens principaux">
+                {% for meridien_principaux in home_data.meridiens_principaux %}
+                <option value="{{meridien_principaux.code}}" {{ home_data.meridien == meridien_principaux.code ? 'selected' : '' }}>{{meridien_principaux.nom}} ({{meridien_principaux.code}})</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Merveilleux vaisseaux">
+                {% for meridien_merveilleux in home_data.meridiens_merveilleux %}
+                <option value="{{meridien_merveilleux.code}}" {{ home_data.meridien == meridien_merveilleux.code ? 'selected' : '' }}>{{meridien_merveilleux.nom}} ({{meridien_merveilleux.code}})</option>
+                {% endfor %}
+            </optgroup>
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">
+            Filtrer
+            </button>
+            <a href="/" class="btn btn-ghost">    <!-- lien vers la page d'accueil sans aucun paramètre de filtre (page=1 par défaut côté serveur) -->
+            Réinitialiser
+            </a>
+        </div>
+
+        </div>
+    </fieldset>
+    </form>
+</section>

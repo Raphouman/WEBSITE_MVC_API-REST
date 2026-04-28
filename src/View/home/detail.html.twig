@@ -1,0 +1,96 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %} Symptômes – AAA Acupuncture {% endblock %}
+
+{% block meta_description %}
+    {# définir la pathologie dynamiquement dans la description #}
+  <meta name="description" content="Consultation des symptômes en acupuncture traditionnelle chinoise, pour une pathologie précise.">
+{% endblock %}
+
+{% block style %}
+    {# définir le style #}
+   <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block main %}
+    <main class="site-main" role="main">
+        <section id="BigBox">
+            <nav>
+                <ol class="breadcrumb">
+                    <li> Pathologie </li>
+                    <li id="Pathologie_courante"> > {{ patho_data.nom }} </li>
+                </ol>
+                
+            </nav>
+            <section class="detail-layout">
+                <section id="SmallBox_1">  
+                    <section class="detail-card"> 
+                        <section class="detail-card-header">
+                            <h2>{{ patho_data.nom }}</h2>
+                        </section>
+                        <section class="detail-card-body">
+                            <section id="TinyBox1">
+                                <section class="meta-item">
+                                    <h3>Méridien : </h3>
+                                    <p id="Detail_1">{{ patho_data.meridien }}</p>
+                                </section>
+                                <section class="meta-item">
+                                    <h3>Type : </h3>
+                                    <p id="Detail_2">{{ patho_data.type }}</p>
+                                </section>
+                                <section class="meta-item">
+                                    <h3>Symptôme(s) associé(s) : </h3>
+                                </section>
+                                <ul class="symptome-list">
+                                    {% for element in patho_data.symptome %}
+                                        <li>{{element.desc}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </section>
+                        </section>
+                    </section>
+                    <section class="detail-nav">
+                        <a class="btn btn-ghost" href="/detail?id={{ patho_data.patho_precedente.idp }}&type={{patho_data.filtre_type}}&carac={{patho_data.filtre_carac}}&meridien={{patho_data.filtre_meridien}}">{{ patho_data.patho_precedente.desc }}</a>
+                        <a class="btn btn-ghost" href="/detail?id={{ patho_data.patho_suivante.idp }}&type={{patho_data.filtre_type}}&carac={{patho_data.filtre_carac}}&meridien={{patho_data.filtre_meridien}}">{{ patho_data.patho_suivante.desc }}</a>
+                    </section>
+                </section>
+                <section id="SmallBox_2">
+                    <section class="sidebar-card">
+                        <section class="sidebar-card-title"><h2>{{ patho_data.meridien }}</h2></section>
+                        <section class="sidebar-card-body">
+                            <section class="sidebar-detail">
+                                <h3>Élément : </h3>
+                                <p class="Description">{{ patho_data.element }}</p>
+                            </section>
+                            <section class="sidebar-detail">
+                                <h3>Nature : </h3>
+                                <p class="Description">{{ patho_data.yin }}</p>
+                            </section>
+                            <section class="sidebar-detail">
+                                <h3>Code : </h3>
+                                <p class="Description">{{ patho_data.code }}</p>
+                            </section>
+                        </section>
+                    </section>
+                    <section class="sidebar-card">
+                        <section class="sidebar-card-title"><h2>Mots-clés associés</h2></section>
+                        <section class="sidebar-card-body">
+                            {% if user_data.isLogged %}
+                                <ul class="keyword-list">
+                                {% for element in patho_data.keyword %}
+                                    <li class="keyword">{{ element.name }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <section id="Login">
+                                    <p>🔒 Connexion requise
+                                        Les mots-clés sont accessibles aux utilisateurs authentifiés.</p>
+                                </section>
+                            {% endif %}
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </main>
+{% endblock %}

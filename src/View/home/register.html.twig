@@ -1,0 +1,104 @@
+{#<-- src/View/register.html.twig -->#}
+{#<-- Vue d'inscription : formulaire HTML pour que les utilisateurs puissent CREER un compte -->#}
+
+{% extends 'layout/base.html.twig' %}
+
+{% block title %} Inscription - AAA Acupuncture {% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="Inscription a l'espace membres de l'Association des Acupuncteurs pour l'Accessibilite.">
+{% endblock %}
+
+{% block main %}
+    <main id="main-content" class="login-page" aria-labelledby="register-heading">
+
+        <div class="login-card">
+
+            <div class="login-card-header">
+                <div class="logo-symbol-lg" aria-hidden="true">AAA</div>
+                <h1 id="register-heading">Creer un compte</h1>
+                <p>Inscrivez-vous pour acceder a l'espace membres</p>
+            </div>
+
+            <div class="login-card-body">
+
+                {% if error_bool %}
+                    <div class="alert alert-danger" role="alert" aria-live="assertive">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="/register" novalidate aria-labelledby="register-heading">
+
+                    <div class="form-group">
+                        <label for="identifiant">
+                            Identifiant
+                            <span aria-hidden="true" style="color:var(--color-danger);">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="identifiant"
+                            name="identifiant"
+                            value="{{ identifiant|default('')|e('html_attr') }}"
+                            autocomplete="username"
+                            required
+                            aria-required="true"
+                            aria-describedby="identifiant-hint"
+                            spellcheck="false"
+                            placeholder="Email ou Nom d'utilisateur"
+                        >
+                        <p class="hint" id="identifiant-hint">Choisissez un identifiant unique.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mot-de-passe">
+                            Mot de passe
+                            <span aria-hidden="true" style="color:var(--color-danger);">*</span>
+                        </label>
+                        <div class="password-input-wrap">
+                            <input
+                                type="password"
+                                id="mot-de-passe"
+                                name="password"
+                                autocomplete="new-password"
+                                required
+                                aria-required="true"
+                                aria-describedby="mdp-hint"
+                                placeholder="••••••••"
+                            >
+                            <button type="button" class="btn-toggle-password" aria-label="Afficher le mot de passe" onclick="togglePassword('mot-de-passe', this)">👁</button>
+                        </div>
+                        <p class="hint" id="mdp-hint">Minimum 8 caracteres recommandés.</p>
+                    </div>
+
+                    <input type="hidden" name="csrf_token" value="">
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;margin-bottom:0.5rem;">
+                        S'inscrire
+                    </button>
+                    <a href="/login" class="btn btn-ghost" style="width:100%;justify-content:center;padding:.75rem;display:flex;">
+                        Deja inscrit ? Se connecter
+                    </a>
+
+                </form>
+
+                <div class="form-divider" aria-hidden="true">ou</div>
+
+                <p style="text-align:center;font-size:.85rem;color:var(--color-text-muted);">
+                    <a href="/">Retour a la liste des pathologies</a>
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+{% endblock %}
+
+
+
+
+
+{% block scripts %}
+  <script src="/js/toggle-password.js"></script>
+{% endblock %}

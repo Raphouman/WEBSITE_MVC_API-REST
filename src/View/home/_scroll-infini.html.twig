@@ -1,0 +1,42 @@
+{# 
+=====================================================================
+SCROLL INFINI — zone HTML servant de support au JavaScript ci-dessous
+===================================================================== 
+#}
+
+{# Indicateur de chargement (spinner textuel).
+    Masqué par défaut (display:none), affiché par le JS ("display:block") pendant les requêtes AJAX.
+    aria-live="polite" : les lecteurs d'écran annoncent le changement de contenu. #}
+<div id="scroll-loader" class="scroll-loader" role="status" aria-live="polite">
+Chargement…
+</div>
+
+{# Message d'erreur affiché par le JS (ex: 401 non connecté). Masqué par défaut. #}
+<div id="scroll-error" class="scroll-error" role="alert" aria-live="assertive" style="display:none"></div>
+
+{# -----------------------------------------------------------------------
+    SENTINELLE DE SCROLL (élément invisible utilisé comme déclencheur)
+    -----------------------------------------------------------------------
+    Div de 1px de hauteur placée APRÈS la pagination.
+    L'IntersectionObserver JS surveille sa visibilité : dès qu'elle entre
+    dans le viewport (l'utilisateur a scrollé (vraiment) jusqu'en bas), le chargement
+    de la page suivante est déclenché.
+
+    Les data-attributes portent l'état initial (page courante, total, filtres)
+    injectés par Twig. Le JS les lit au démarrage pour initialiser son état
+    sans jamais mettre de données dynamiques directement dans le code JS
+    (ce qui serait un vecteur d'injection XSS).
+
+    Le filtre Twig |e('html_attr') encode les valeurs pour les data-attributes :
+    il transforme les caractères spéciaux (", ', <, >, &) en entités HTML,
+    neutralisant toute tentative d'injection via les paramètres de l'URL.
+    ----------------------------------------------------------------------- #}
+<div id="scroll-sentinel" class="scroll-sentinel"
+    data-page="{{ home_data.page }}"
+    data-total-pages="{{ home_data.total_pages }}"
+    data-limit="{{ home_data.limit }}"
+    data-type="{{ home_data.type|e('html_attr') }}"
+    data-carac="{{ home_data.carac|e('html_attr') }}"
+    data-meridien="{{ home_data.meridien|default('')|e('html_attr') }}"
+    aria-hidden="true">   
+</div>  <!-- (div invisible de 1px placé 200px en bas de la pagination) = Sentinel qui déclenchera loadNextPage() si l'utilisateur arrive dessus-->

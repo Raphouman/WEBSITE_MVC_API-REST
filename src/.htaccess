@@ -1,0 +1,15 @@
+# Ce fichier sert à Apache, à rediriger toutes les requêtes vers index.php, sauf si elles correspondent à un fichier ou dossier existant.
+
+
+# 1. On active le moteur de réécriture
+RewriteEngine On
+
+# 2. Si la requête ne correspond PAS à un fichier existant (-f)
+RewriteCond %{REQUEST_FILENAME} !-f
+# 3. Et si elle ne correspond PAS à un dossier existant (-d)
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# 4. Alors on redirige tout vers index.php
+# [QSA] permet de conserver les paramètres d'URL (ex: ?id=12)
+# [L] indique que c'est la dernière règle à appliquer
+RewriteRule ^(.*)$ index.php [QSA,L]

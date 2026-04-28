@@ -1,0 +1,44 @@
+{# ============================================================
+    PAGINATION CLASSIQUE (rendu côté serveur par Twig)
+    -----------------------------------------------------------
+    Affichée au chargement initial de la page.
+    Elle est ensuite mise à jour dynamiquement par le JS du
+    scroll infini (fonction renderPagination) pour refléter
+    les pages déjà chargées sans rechargement complet. ==> API REST
+    ============================================================ #}
+{% if home_data.total_pages > 1 %}
+<nav id="pagination-nav" class="pagination" aria-label="Pagination des résultats">
+
+    {# Bouton "page précédente" ‹ :
+        - Si on est sur la page 1, le bouton est désactivé (span non-cliquable).
+        - Sinon, c'est un lien qui recharge la page avec page-1 et tous les filtres actifs. #}
+
+    {% if home_data.page > 1 %} {# si on est au-delà de la page 1, on affiche un lien vers la page précédente #}
+    <a href="/?page={{ home_data.page - 1 }}&limit={{ home_data.limit }}&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}">‹</a>
+    {% else %}
+    <span aria-disabled="true">‹</span>   {#1ère page non cliquable #}
+    {% endif %}
+
+    {# Boucle sur toutes les pages disponibles (1 à total_pages).
+        - La page courante est affichée comme un indicateur non-cliquable (span.current).
+        - Les autres pages sont des liens qui rechargent la vue côté serveur. #}
+    {% for i in 1..home_data.total_pages %}
+    {% if i == home_data.page %}  {# page courante : span non-cliquable avec indication pour les lecteurs d'écran #}
+        <span class="current" aria-current="page" aria-label="Page {{ i }}, page actuelle">{{ i }}</span>
+
+    {% else %}  {# autres pages : liens #}
+        <a href="/?page={{ i }}&limit={{ home_data.limit }}&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}" aria-label="Page {{ i }}">{{ i }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {# Bouton "page suivante" › :
+        - Si on est sur la dernière page, le bouton est désactivé.
+        - Sinon, c'est un lien vers page+1 avec les filtres conservés. #}
+    {% if home_data.page < home_data.total_pages %}
+    <a href="/?page={{ home_data.page + 1 }}&limit={{ home_data.limit }}&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}">›</a>
+    {% else %}
+    <span aria-disabled="true">›</span>  {# dernière page non cliquable #}
+    {% endif %}
+
+</nav>
+{% endif %}

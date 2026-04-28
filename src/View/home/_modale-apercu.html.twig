@@ -1,0 +1,45 @@
+{# ============================================================
+   MODALE D'APERÇU RAPIDE — remplie dynamiquement par le JS
+   via l'endpoint GET /api/pathologies/{id}
+
+   Les "modale-..." seront gérées par _modale-apercu.js dans loadModale(id)
+   ============================================================ #}
+<div id="modale-overlay" class="modale-overlay" hidden>
+    <div id="modale-apercu"
+         class="modale-apercu"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="modale-titre">
+
+        <div class="modale-header">
+            <h2 id="modale-titre"></h2>
+            <button id="modale-fermer"
+                    class="modale-fermer"
+                    aria-label="Fermer l'aperçu"
+                    type="button">
+                &times;
+            </button>
+        </div>
+
+        <div class="modale-body">
+            <div class="modale-infos">
+                <p><strong>Méridien :</strong> <span id="modale-meridien"></span></p>
+                <p><strong>Type :</strong> <span id="modale-type"></span></p>
+                <p><strong>Élément :</strong> <span id="modale-element"></span></p>
+                <p><strong>Nature :</strong> <span id="modale-yin"></span></p>
+                <p><strong>Code :</strong> <span id="modale-code"></span></p>
+            </div>
+
+            <div class="modale-symptomes">
+                <h3>Symptômes associés</h3>
+                <ul id="modale-symptomes-liste"></ul>
+            </div>
+        </div>
+
+        <div class="modale-footer">
+            <a id="modale-lien-detail" href="#" class="btn btn-primary btn-sm">
+                Voir la fiche complète
+            </a>
+        </div>
+    </div>
+</div>

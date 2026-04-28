@@ -1,0 +1,15 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}404 – Page non trouvée{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="La pathologie demandée n'a pas été trouvée.">
+{% endblock %}
+
+{% block main %}
+<main id="main-content">
+    <h1>Pathologie non trouvée</h1>
+    <p>L'identifiant demandé ne correspond à aucune pathologie.</p>
+    <a href="/">Retour à l'accueil</a>
+</main>
+{% endblock %}

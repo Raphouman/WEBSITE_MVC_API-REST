@@ -1,0 +1,108 @@
+{% extends 'layout/base.html.twig' %}  {# ici les blocks non redéfinis (title, meta_description) seront hérités de base.html.twig #}
+
+{% block title %} Pathologies – AAA Acupuncture {% endblock %}
+
+{% block meta_description %}
+  <meta name="description" content="Consultation des pathologies en acupuncture traditionnelle chinoise. Filtrez par type, méridien ou caractéristique.">
+{% endblock %}
+
+{% block main %}
+  <main id="main-content" class="site-main">
+
+    <div class="page-hero">
+      <h1>Pathologies en acupuncture</h1>
+      <h3>Bienvenue sur le site de l'AAA (pas les piles), niveau accessibilité y'a pas mieux ! </h3>
+    </div>
+
+    {% include 'home/_filtres.html.twig' %}
+
+    <!-- ____________________________________________ TABLEAU DES PATHOLOGIES ______________________________________________________ -->
+    <!-- ── Tableau des pathologies ── -->
+    <section class="patho-table-section" aria-labelledby="table-heading">
+
+      <div class="table-header">
+        <div class="table-header-left">
+          <h2 id="table-heading">Liste des pathologies</h2>
+          <p class="result-count" role="status" aria-live="polite">
+            <strong>{{ home_data.total_results }}</strong> pathologie(s) trouvée(s)
+          </p>
+        </div>
+        <nav class="limit-selector">  <!-- Celui correspondant à la limite actuelle recoit la classe 'current' -->
+          <a href="/?limit=5&page=1&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}" class="{{ home_data.limit == 5 ? 'current' : '' }}">5</a>
+          <a href="/?limit=10&page=1&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}" class="{{ home_data.limit == 10 ? 'current' : '' }}">10</a>
+          <a href="/?limit=20&page=1&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}" class="{{ home_data.limit == 20 ? 'current' : '' }}">20</a>
+          <a href="/?limit=50&page=1&type={{ home_data.type }}&carac={{ home_data.carac }}&meridien={{ home_data.meridien }}" class="{{ home_data.limit == 50 ? 'current' : '' }}">50</a>
+        </nav>
+      </div>
+
+      <div class="table-responsive">
+        <table aria-labelledby="table-heading" aria-describedby="table-caption">
+          <caption id="table-caption">
+            Tableau des pathologies – cliquez sur une ligne pour afficher les détails et les symptômes associés.
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Pathologie</th> <!-- scope="col" indique que c'est une en-tête de colonne, ce qui aide les lecteurs d'écran à comprendre la structure du tableau -->
+              <th scope="col">Type</th>
+              <th scope="col">Méridien</th>
+              <th scope="col">Aperçu</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+
+            {# DÉBUT DE LA BOUCLE DYNAMIQUE TWIG #}
+            <!-- Twig reçoit de homeController: pathologies, totalPages, total_results, page, limit, type, carac, meridien -->
+            {% for patho in home_data.pathologies %}
+            <!-- on construit une ligne de 4 colonnes pour chaque pathologie : -->
+            <tr>
+              <td>
+                {# On construit le lien vers la page de détails en passant l'ID dans l'URL #}
+                <a class="row-link" href="/detail?id={{ patho.idp }}&type={{home_data.type}}&carac={{home_data.carac}}&meridien={{home_data.meridien}}">
+                  {{ patho.desc }}
+                </a>
+              </td>
+              <td>
+                <span class="badge badge-type-{{ patho.type|lower|replace({' ': '-'}) }}">  {# Classe CSS dynamique basée sur le type (ex: "Plein Vide" → "badge-type-plein-vide") #}
+                  {{ patho.type }}
+                </span>
+              </td>
+              <td>
+                <span class="meridien-yin">{{ patho.mer }}</span>
+              </td>
+              <td>
+                {% if not user_data.isLogged %}<span class="apercu-locked" title="Fonctionnalité réservée aux utilisateurs connectés">{% endif %}
+                <button data-id="{{patho.idp}}" class="btn btn-ghost btn-sm" aria-label="Détails : {{ patho.desc }}" {{ not user_data.isLogged ? 'disabled' : '' }}>Aperçu</button>  <!-- ce boutton renverra en pop UP les détails de la pathologie -->
+                {% if not user_data.isLogged %}</span>{% endif %}
+                <!-- Grace au data-id assigné au boutton, le _modale-apercu.js s'en servira -->
+              </td>
+            </tr>
+            
+            {# Cas où le tableau est vide (aucun résultat au filtre) #}
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 20px;">
+                    Aucune pathologie ne correspond à vos critères de recherche.
+                </td>
+            </tr>
+            {% endfor %}
+            {# FIN DE LA BOUCLE #}
+          </tbody>
+        </table>
+      </div>
+
+      {% include 'home/_pagination.html.twig' %}     
+
+      {% include 'home/_scroll-infini.html.twig' %}
+    </section>
+
+    {% include 'home/_modale-apercu.html.twig' %}
+
+  </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/js/filtres.js"></script>
+  <script src="/js/scroll-infini.js"></script>
+  <script src="/js/modale-apercu.js"></script>
+{% endblock %}

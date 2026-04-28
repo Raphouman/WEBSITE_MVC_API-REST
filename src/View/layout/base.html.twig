@@ -1,0 +1,71 @@
+<!DOCTYPE html>     <!-- va servir de base (blocks partagés) pour les autres pages du site, comme detail.html.twig et login.html.twig) -->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AAA Acupuncture{% endblock %}</title>
+    {% block meta_description %} {% endblock %}
+    {% block style %}
+        <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- Précharger les polices Google Fonts, pas necessaire -->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>   <!-- Précharger les polices Google Fonts avec CORS, pas necessaire -->
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"> <!-- Importer les polices Google Fonts, pas necessaire -->
+        <link rel="stylesheet" href="/css/style.css"> <!-- Lien vers la feuille de style CSS locale qui vient compléter le style global -->
+    {% endblock %}
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    <!-- ══════════════════ HEADER ══════════════════ -->
+    <header class="site-header" role="banner">
+        <div class="header-inner">
+            <a class="site-logo" href="index.html" aria-label="AAA – Association des Acupuncteurs pour l'Accessibilité – Accueil">
+                <div class="logo-symbol" aria-hidden="true">AAA</div>
+                <span class="logo-text">
+                Acupuncture
+                <small>Association des Acupuncteurs pour l'Accessibilité</small>
+                </span>
+            </a>
+            <nav class="main-nav" aria-label="Navigation principale">
+                <ul role="list">
+                <li><a href="/login" aria-current="page">Pathologies</a></li>
+                <li><a href="recherche.html">Recherche</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                {% if user_data.isLogged %}
+                <span>Bienvenue {{ user_data.session_id }}</span>
+                <a href="/logout" class="btn btn-primary btn-sm">Déconnexion</a>
+
+                <form method="POST" action="/delete" style="display:inline" onsubmit="return confirm('Supprimer définitivement votre compte ?')">   <!-- methode POST pour protection des suppressions via URL... -->
+                    <button type="submit" class="btn btn-danger btn-sm">Supprimer mon compte</button>
+                </form>
+
+                {% else %}
+                <a href="/login" class="btn btn-primary btn-sm">Connexion</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    {% if user_data.session_JWT is defined and user_data.session_JWT %}     <!-- si défini (dans TwigController.php) et pas vide -->
+    <meta name="api-token" content="{{ user_data.session_JWT }}"> <!-- Balise meta pour stocker le JWT, non visible dans le source HTML ??? -->
+    {% endif %} <!-- name="api-token" sera réutilisée par le JS jwt.js -->
+
+    <!-- ══════════════════ MAIN ══════════════════ -->
+    
+    {% block main %}{% endblock %}
+
+    <script src="/js/jwt.js"></script>  <!-- script commun à toutes les pages pour gérer le JWT côté client -->
+    {% block scripts %}{% endblock %}   <!-- les scripts spécifiques à une page (ex: modale-apercu.js pour la page d'accueil) seront injectés ici, après le script jwt.js qui est commun à toutes les pages -->
+
+    <!-- ══════════════════ FOOTER ══════════════════ -->
+    
+    <footer>
+        <p>
+            AAA – Association des Acupuncteurs pour l'Accessibilité &nbsp;|&nbsp;
+            Base de connaissances : <em>Vademecum d'acupuncture traditionnelle</em>, Jean Motte &nbsp;|&nbsp;
+            <a href="#">Mentions légales</a>
+        </p>
+    </footer>
+</body>
+</html>
