@@ -1,3 +1,17 @@
+# VE
+.env
+.env.*
+.venv
+
+# IDEs and editors
+.vscode
+.idea
+*.log
+*.cache
+*.bak
+*.tmp
+*.swp
+
 # CakePHP 3
 
 /vendor/*
